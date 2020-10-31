@@ -26,7 +26,24 @@
 				<h2>Tagging</h2>
 
 				<!-- ############### Aufgabe1a Form1 Start -->
-				<form id="tag-form" action="/tagging" method="post"></form>
+				<form id="tag-form" action="/tagging" method="post">
+					<fieldset>
+						<legend>Enter new GeoTag</legend>
+						<label for="latitude">latitude</label><br>
+						<input type="text" id="tagging_latitude_input" name="tagging_latitude_input" placeholder="49.01379" required><br>
+
+						<label for="longitude">longitude</label><br>
+						<input type="text" id="tagging_longitude_input" name="tagging_longitude_input" placeholder="8.390071" required><br>
+
+						<label for="name">name:</label><br>
+						<input type="text" id="tagging_name_input" name="tagging_name_input" placeholder="some name" maxlength="10" required><br>
+
+						<label for="hashtag">hashtag</label><br>
+						<input type="text" id="tagging_hashtag_input" name="tagging_hashtag_input" placeholder="# + max. 10 letters" maxlength="11" pattern="#[a-z]{1,10}"><br>
+						<br>
+						<input type="submit" id="tagging_submit" name="tagging_submit" value="submit">
+					</fieldset>
+				</form>
 				<!-- ############### Aufgabe1a Form1 Ende -->
 
 			</section>
@@ -35,7 +52,13 @@
 				<h2>Discovery</h2>
 
 				<!-- ############### Aufgabe1a Form2 Start -->
-				<form id="filter-form" action="/discovery" method="post"></form>
+				<form id="filter-form" action="/discovery" method="post">
+					<fieldset>
+						<legend>Filter by Searchterm</legend>
+						<input type="text" id="discovery_searchterm_input" name="discovery_searchterm_input">
+						<input type="submit" id="discovery_submit" name="discovery_submit" value="apply">
+				</fieldset>
+				</form>
 				<!-- ############### Aufgabe1a Form2 Ende -->
 
 				<div class="taglist">
