@@ -22,12 +22,12 @@
 
 		<main>
 
-			<section class="tagging">
+			<section class="col-3 col-s-12 tagging">
 				<h2>Tagging</h2>
 
 				<!-- ############### Aufgabe1a Form1 Start -->
 				<form id="tag-form" action="/tagging" method="post">
-					<fieldset>
+					<fieldset id="tagFieldset">
 						<legend>Enter new GeoTag</legend>
 						<label for="latitude">latitude</label><br>
 						<input type="text" id="tagging_latitude_input" name="tagging_latitude_input" placeholder="49.01379" required><br>
@@ -48,7 +48,7 @@
 
 			</section>
 
-			<section class="discovery">
+			<section class="col-9 col-s-12 discovery">
 				<h2>Discovery</h2>
 
 				<!-- ############### Aufgabe1a Form2 Start -->
@@ -57,18 +57,18 @@
 						<legend>Filter by Searchterm</legend>
 						<input type="text" id="discovery_searchterm_input" name="discovery_searchterm_input">
 						<input type="submit" id="discovery_submit" name="discovery_submit" value="apply">
-				</fieldset>
+					</fieldset>
 				</form>
 				<!-- ############### Aufgabe1a Form2 Ende -->
 
-				<div class="taglist">
+				<div class="col-3 col-s-12 taglist">
 					<ul id="results">
 						<li>Castle (49.01379, 8.404435) #sight</li>
 						<li>IWI (49.01379, 8.390071) #edu</li>
 					</ul>
 				</div>
 
-				<div class="tagmap">
+				<div class="col-9 col-s-12 tagmap">
 					<img id="result-img" src="./images/mapview.jpg" alt="a map with locations"/>
 					<div class="caption">Result map</div>
 				</div>
@@ -77,8 +77,8 @@
 
 		</main>
 
-		<footer>
-			<span>2017 by LKIT</span>
+		<footer class="col-12 col-s-12 footer">
+			<span>2020/21 by scti1062 and remi1026</span>
 		</footer>
 
 	</body>
