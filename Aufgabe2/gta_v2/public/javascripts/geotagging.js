@@ -124,7 +124,8 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
             tryLocate(function(position) {
                 document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
                 document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
-                document.querySelector("#discovery_searchterm_input").value = position.coords.latitude + ", " + position.coords.longitude;
+                document.querySelector("#discovery_lat").value = position.coords.latitude;
+                document.querySelector("#discovery_lon").value = position.coords.longitude;
                 document.querySelector("#result-img").src = getLocationMapSrc(position.coords.latitude, position.coords.longitude, undefined, 15);
               }, function(msg) {
                 alert(msg);
