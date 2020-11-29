@@ -3,25 +3,43 @@ header {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-main {
+body {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: white;
   }
 
+main {
+  display: flex;
+  flex-flow: row wrap;
+} 
 
 .tagging {
  margin: 20px;
-  
 }
 
-
-.discovery {
+.discovery  {
   margin: 20px;
 }
 
+.filter-form {
+  margin: 20px;
+}
+
+.discoveryTags {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.taglist {
+  display: flex;
+}
+
+.tagmap {
+  margin: 20px;
+}
 
 a {
   color: #00B7FF;
@@ -33,13 +51,9 @@ header {
   color: white;
 }
 
-#tag-form {
-  
-}
 
-#filter-form {
-  
-}
+
+
 
 #results {
   list-style-type: none;
