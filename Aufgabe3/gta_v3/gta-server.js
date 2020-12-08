@@ -29,13 +29,19 @@ app.set('view engine', 'ejs');
  * Teste das Ergebnis im Browser unter 'http://localhost:3000/'.
  */
 
-// TODO: CODE ERGÄNZEN
+// TODO: CODE ERGÄNZEN 
+app.use(express.static('public'));
 
 /**
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
-
+function geoTag() {
+    this.latitude = document.querySelector("#tagging_latitude_input").value;
+    this.longitude = document.querySelector("#tagging_longitude_input").value;
+    this.name = document.querySelector("#tagging_name_input").value;
+    this.hashtag = document.querySelector("#tagging_hashtag_input").value;
+}
 // TODO: CODE ERGÄNZEN
 
 /**
@@ -46,6 +52,39 @@ app.set('view engine', 'ejs');
  * - Funktion zum hinzufügen eines Geo Tags.
  * - Funktion zum Löschen eines Geo Tags.
  */
+var geoTags;
+
+function tagSearchRadius (tags, lat, lon, radius) {
+    var taglist;
+    tags.forEach(element => { 
+        if ((Math.abs(lat - element.latitude) <= (radius * Math.pow(10, -6))) &&
+            (Math.abs(lon - element.longitude) <= (radius * Math.pow(10, -6)))) {
+                taglist.push(element);
+            }
+    }); 
+    return taglist;
+}
+
+function tagSearch(tags, tagName) {
+    tags.forEach(element => { 
+        if (tagName == element.name)
+        return element;
+    }); 
+}
+
+function addGeoTag(tags) {
+    tags.push(geoTag());
+}
+
+function removeGeoTag(tags, tagName) {
+    tags.forEach(element, index => { 
+        if (tagName == element.name) {
+            tags.splice(index, 0);
+            return;
+        }
+    }); 
+}
+
 
 // TODO: CODE ERGÄNZEN
 
@@ -76,6 +115,10 @@ app.get('/', function(req, res) {
  * Als Response wird das ejs-Template mit Geo Tag Objekten gerendert.
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
+app.post('/tagging', function (req, res) {
+    res.render(req.body, "tag-form");
+  })
+
 
 // TODO: CODE ERGÄNZEN START
 
@@ -90,7 +133,9 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
-
+app.post('/discovery', function (req, res) {
+    res.render(req.body, "filter-form");
+  })
 // TODO: CODE ERGÄNZEN
 
 /**
