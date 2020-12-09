@@ -116,8 +116,21 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
 app.post('/tagging', function (req, res) {
-    res.render(req.body, "tag-form");
+    response = {
+        
+        latitude:req.body.tagging_latitude_input,
+        longitude:req.body.tagging_longitude_input,
+        name:req.body.tagging_name_input,
+        hashtag:req.body.tagging_hashtag_input
+    }  
+
+    //console.log(req.body);
+    res.render('gta', {
+        taglist: [response]
+    });
   })
+
+
 
 
 // TODO: CODE ERGÄNZEN START
@@ -134,7 +147,19 @@ app.post('/tagging', function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 app.post('/discovery', function (req, res) {
-    res.render(req.body, "filter-form");
+   /*
+    discovery_searchterm_input: 'a',
+  discovery_lat: '48.989132299999994',
+  discovery_lon: '8.391791',
+  discovery_submit:
+
+
+   */
+
+
+    res.render('gta', {
+        taglist: []
+    });
   })
 // TODO: CODE ERGÄNZEN
 
