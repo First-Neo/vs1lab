@@ -36,11 +36,11 @@ app.use(express.static('public'));
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
-function geoTag() {
-    this.latitude = document.querySelector("#tagging_latitude_input").value;
-    this.longitude = document.querySelector("#tagging_longitude_input").value;
-    this.name = document.querySelector("#tagging_name_input").value;
-    this.hashtag = document.querySelector("#tagging_hashtag_input").value;
+function geoTag(lat, lon, name, hashtag) {
+    this.latitude = lat;
+    this.longitude = lon;
+    this.name = name;
+    this.hashtag = hashtag;
 }
 // TODO: CODE ERGÄNZEN
 
@@ -52,7 +52,8 @@ function geoTag() {
  * - Funktion zum hinzufügen eines Geo Tags.
  * - Funktion zum Löschen eines Geo Tags.
  */
-var geoTags;
+var geoTags = [];
+//var geoTags = [new geoTag("48.989132", "8.391791", "test", "#ha")];
 
 function tagSearchRadius (tags, lat, lon, radius) {
     var taglist;
@@ -66,14 +67,17 @@ function tagSearchRadius (tags, lat, lon, radius) {
 }
 
 function tagSearch(tags, tagName) {
+    var result = [];
     tags.forEach(element => { 
         if (tagName == element.name)
-        return element;
+        result.push(element)
     }); 
+    return result;
 }
 
-function addGeoTag(tags) {
-    tags.push(geoTag());
+function addGeoTag(lat, lon, name, hashtag) {
+    geoTags.push(new geoTag(lat, lon, name, hashtag));
+    //geoTags = new geoTag(lat, lon, name, hashtag);
 }
 
 function removeGeoTag(tags, tagName) {
@@ -116,23 +120,22 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
 app.post('/tagging', function (req, res) {
-    response = {
-        
-        latitude:req.body.tagging_latitude_input,
-        longitude:req.body.tagging_longitude_input,
-        name:req.body.tagging_name_input,
-        hashtag:req.body.tagging_hashtag_input
-    }  
-
-    //console.log(req.body);
+    
+    console.log(req.body.tagging_latitude_input);
+    console.log(req.body.tagging_longitude_input);
+    console.log(req.body.tagging_name_input);
+    console.log(req.body.tagging_hashtag_input);
+    
+    addGeoTag(
+        req.body.tagging_latitude_input, 
+        req.body.tagging_longitude_input, 
+        req.body.tagging_name_input,
+        req.body.tagging_hashtag_input);
+    
     res.render('gta', {
-        taglist: [response]
+        taglist: geoTags
     });
   })
-
-
-
-
 // TODO: CODE ERGÄNZEN START
 
 /**
@@ -147,18 +150,10 @@ app.post('/tagging', function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 app.post('/discovery', function (req, res) {
-   /*
-    discovery_searchterm_input: 'a',
-  discovery_lat: '48.989132299999994',
-  discovery_lon: '8.391791',
-  discovery_submit:
-
-
-   */
-
-
+    var result = tagSearch(geoTags, req.body.discovery_searchterm_input);
+   
     res.render('gta', {
-        taglist: []
+        taglist: result
     });
   })
 // TODO: CODE ERGÄNZEN
