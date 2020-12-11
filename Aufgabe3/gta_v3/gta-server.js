@@ -120,12 +120,6 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
 app.post('/tagging', function (req, res) {
-    
-    console.log(req.body.tagging_latitude_input);
-    console.log(req.body.tagging_longitude_input);
-    console.log(req.body.tagging_name_input);
-    console.log(req.body.tagging_hashtag_input);
-    
     addGeoTag(
         req.body.tagging_latitude_input, 
         req.body.tagging_longitude_input, 

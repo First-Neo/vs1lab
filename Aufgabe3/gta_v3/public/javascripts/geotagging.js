@@ -121,15 +121,24 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-            tryLocate(function(position) {
-                document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
-                document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
-                document.querySelector("#discovery_lat").value = position.coords.latitude;
-                document.querySelector("#discovery_lon").value = position.coords.longitude;
-                document.querySelector("#result-img").src = getLocationMapSrc(position.coords.latitude, position.coords.longitude, undefined, 15);
-              }, function(msg) {
-                alert(msg);
-              });    
+            if(document.querySelector("#tagging_latitude_input").value == "") {
+                tryLocate(function(position) {
+                    document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
+                    document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
+                    document.querySelector("#discovery_lat").value = position.coords.latitude;
+                    document.querySelector("#discovery_lon").value = position.coords.longitude;
+                    document.querySelector("#result-img").src = getLocationMapSrc(position.coords.latitude, position.coords.longitude, undefined, 15);
+                }, function(msg) {
+                    alert(msg);
+                });   
+            } else {
+                document.querySelector("#result-img").src = getLocationMapSrc(
+                                                                                document.querySelector("#tagging_latitude_input").value, 
+                                                                                document.querySelector("#tagging_longitude_input").value, 
+                                                                                undefined, 
+                                                                                15);
+
+            } 
         }
 
     }; // ... Ende öffentlicher Teil
