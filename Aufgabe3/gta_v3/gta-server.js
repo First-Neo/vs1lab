@@ -53,10 +53,9 @@ function geoTag(lat, lon, name, hashtag) {
  * - Funktion zum Löschen eines Geo Tags.
  */
 var geoTags = [];
-//var geoTags = [new geoTag("48.989132", "8.391791", "test", "#ha")];
 
 function tagSearchRadius (tags, lat, lon, radius) {
-    var taglist;
+    var taglist = [];
     tags.forEach(element => { 
         if ((Math.abs(lat - element.latitude) <= (radius * Math.pow(10, -6))) &&
             (Math.abs(lon - element.longitude) <= (radius * Math.pow(10, -6)))) {
@@ -67,6 +66,9 @@ function tagSearchRadius (tags, lat, lon, radius) {
 }
 
 function tagSearch(tags, tagName) {
+    if(tagName == "")
+        return tags;
+
     var result = [];
     tags.forEach(element => { 
         if (tagName == element.name)
@@ -77,7 +79,6 @@ function tagSearch(tags, tagName) {
 
 function addGeoTag(lat, lon, name, hashtag) {
     geoTags.push(new geoTag(lat, lon, name, hashtag));
-    //geoTags = new geoTag(lat, lon, name, hashtag);
 }
 
 function removeGeoTag(tags, tagName) {
@@ -88,8 +89,6 @@ function removeGeoTag(tags, tagName) {
         }
     }); 
 }
-
-
 // TODO: CODE ERGÄNZEN
 
 /**
@@ -100,7 +99,6 @@ function removeGeoTag(tags, tagName) {
  *
  * Als Response wird das ejs-Template ohne Geo Tag Objekte gerendert.
  */
-
 app.get('/', function(req, res) {
     res.render('gta', {
         taglist: []
@@ -125,7 +123,7 @@ app.post('/tagging', function (req, res) {
         req.body.tagging_longitude_input, 
         req.body.tagging_name_input,
         req.body.tagging_hashtag_input);
-    
+
     res.render('gta', {
         taglist: geoTags
     });
@@ -145,7 +143,7 @@ app.post('/tagging', function (req, res) {
  */
 app.post('/discovery', function (req, res) {
     var result = tagSearch(geoTags, req.body.discovery_searchterm_input);
-   
+
     res.render('gta', {
         taglist: result
     });
@@ -155,18 +153,15 @@ app.post('/discovery', function (req, res) {
 /**
  * Setze Port und speichere in Express.
  */
-
 var port = 3000;
 app.set('port', port);
 
 /**
  * Erstelle HTTP Server
  */
-
 var server = http.createServer(app);
 
 /**
  * Horche auf dem Port an allen Netzwerk-Interfaces
  */
-
 server.listen(port);
