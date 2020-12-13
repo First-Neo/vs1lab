@@ -150,6 +150,12 @@ app.post('/discovery', function (req, res) {
   })
 // TODO: CODE ERGÄNZEN
 
+//Send Stingify of Geotags
+app.get('/taglist', function(req, res) {
+    res.json(JSON.stringify(geoTags))
+});
+
+
 /**
  * Setze Port und speichere in Express.
  */
@@ -165,3 +171,6 @@ var server = http.createServer(app);
  * Horche auf dem Port an allen Netzwerk-Interfaces
  */
 server.listen(port);
+
+
+

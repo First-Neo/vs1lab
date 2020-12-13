@@ -121,22 +121,46 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-            if(document.querySelector("#tagging_latitude_input").value == "") {
+        
+          
+            //console.log(document.querySelector("#result-img").getAttribute("data-tags"));
+
+            //var test = document.querySelector("#result-img").attributes[1].value;
+            //console.log(test.attributes);
+            //console.log(document.querySelector("#result-img").getAttributeNode("data-tags"));
+     
+
+            //var taglist = JSON.parse(document.querySelector("#result-img").getAttribute("data-tags-type"));
+            
+            
+            if (document.querySelector("#discovery_lat").value == "") {
                 tryLocate(function(position) {
                     document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
                     document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
                     document.querySelector("#discovery_lat").value = position.coords.latitude;
                     document.querySelector("#discovery_lon").value = position.coords.longitude;
-                    document.querySelector("#result-img").src = getLocationMapSrc(position.coords.latitude, position.coords.longitude, undefined, 15);
+                    $.getJSON("taglist", function(input) {
+                        document.querySelector("#result-img").setAttribute("data-tags", input);
+                        document.querySelector("#result-img").src = getLocationMapSrc(
+                            document.querySelector("#tagging_latitude_input").value, 
+                            document.querySelector("#tagging_longitude_input").value, 
+                            JSON.parse(input), 
+                            10);
+                    });
                 }, function(msg) {
                     alert(msg);
                 });   
             } else {
-                document.querySelector("#result-img").src = getLocationMapSrc(
-                                                                                document.querySelector("#tagging_latitude_input").value, 
-                                                                                document.querySelector("#tagging_longitude_input").value, 
-                                                                                undefined, 
-                                                                                15);
+                document.querySelector("#tagging_latitude_input").value = document.querySelector("#discovery_lat").value;
+                document.querySelector("#tagging_longitude_input").value = document.querySelector("#discovery_lon").value;
+                $.getJSON("taglist", function(input) {
+                    document.querySelector("#result-img").setAttribute("data-tags", input);
+                    document.querySelector("#result-img").src = getLocationMapSrc(
+                        document.querySelector("#tagging_latitude_input").value, 
+                        document.querySelector("#tagging_longitude_input").value, 
+                        JSON.parse(input), 
+                        10);
+                });
 
             } 
         }
