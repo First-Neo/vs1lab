@@ -122,46 +122,26 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         updateLocation: function() {
         
-          
-            //console.log(document.querySelector("#result-img").getAttribute("data-tags"));
-
-            //var test = document.querySelector("#result-img").attributes[1].value;
-            //console.log(test.attributes);
-            //console.log(document.querySelector("#result-img").getAttributeNode("data-tags"));
-     
-
-            //var taglist = JSON.parse(document.querySelector("#result-img").getAttribute("data-tags-type"));
+            var imageNode = document.querySelector("#result-img");
+            var taglist = JSON.parse(imageNode.getAttribute("data-tags"));
             
-            
-            if (document.querySelector("#discovery_lat").value == "") {
+            if (document.querySelector("#tagging_latitude_input").value == "" || document.querySelector("#tagging_longitude_input").value == "") {
                 tryLocate(function(position) {
-                    document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
-                    document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
-                    document.querySelector("#discovery_lat").value = position.coords.latitude;
-                    document.querySelector("#discovery_lon").value = position.coords.longitude;
-                    $.getJSON("taglist", function(input) {
-                        document.querySelector("#result-img").setAttribute("data-tags", input);
-                        document.querySelector("#result-img").src = getLocationMapSrc(
-                            document.querySelector("#tagging_latitude_input").value, 
-                            document.querySelector("#tagging_longitude_input").value, 
-                            JSON.parse(input), 
-                            10);
-                    });
+                    var lat = getLatitude(position);
+                    var lon = getLongitude(position);
+                    document.querySelector("#tagging_latitude_input").value = lat;
+                    document.querySelector("#tagging_longitude_input").value = lon;
+                    document.querySelector("#discovery_lat").value = lat;
+                    document.querySelector("#discovery_lon").value = lon;
+                    imageNode.src = getLocationMapSrc(lat, lon, taglist, 5);
+
                 }, function(msg) {
                     alert(msg);
                 });   
             } else {
-                document.querySelector("#tagging_latitude_input").value = document.querySelector("#discovery_lat").value;
-                document.querySelector("#tagging_longitude_input").value = document.querySelector("#discovery_lon").value;
-                $.getJSON("taglist", function(input) {
-                    document.querySelector("#result-img").setAttribute("data-tags", input);
-                    document.querySelector("#result-img").src = getLocationMapSrc(
-                        document.querySelector("#tagging_latitude_input").value, 
-                        document.querySelector("#tagging_longitude_input").value, 
-                        JSON.parse(input), 
-                        10);
-                });
-
+                var lat = document.querySelector("#tagging_latitude_input").value;
+                var lon = document.querySelector("#tagging_longitude_input").value;
+                imageNode.src = getLocationMapSrc(lat, lon, taglist, 5);
             } 
         }
 

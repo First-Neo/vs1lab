@@ -41,6 +41,19 @@ function geoTag(lat, lon, name, hashtag) {
     this.longitude = lon;
     this.name = name;
     this.hashtag = hashtag;
+
+    this.getLatitude = function () {
+		return this.latitude;
+	};
+	this.getLongitude = function () {
+		return this.longitude;
+	};
+	this.getName = function () {
+		return this.name;
+	};
+	this.getHashtag = function () {
+		return this.hashtag;
+	};
 }
 // TODO: CODE ERGÄNZEN
 
@@ -52,43 +65,51 @@ function geoTag(lat, lon, name, hashtag) {
  * - Funktion zum hinzufügen eines Geo Tags.
  * - Funktion zum Löschen eines Geo Tags.
  */
+var InMemory = (function () {
 var geoTags = [];
 
-function tagSearchRadius (tags, lat, lon, radius) {
-    var taglist = [];
-    tags.forEach(element => { 
-        if ((Math.abs(lat - element.latitude) <= (radius * Math.pow(10, -6))) &&
-            (Math.abs(lon - element.longitude) <= (radius * Math.pow(10, -6)))) {
-                taglist.push(element);
-            }
-    }); 
-    return taglist;
-}
+    return {
+        tagSearchRadius: function (lat, lon, radius) {
+            var taglist = [];
+            geoTags.forEach(element => { 
+                if ((Math.abs(lat - element.getLatitude()) <= radius) &&
+                    (Math.abs(lon - element.getLongitude()) <= radius)) {
+                        taglist.push(element);
+                    }
+            }); 
+            return taglist;
+        },
 
-function tagSearch(tags, tagName) {
-    if(tagName == "")
-        return tags;
 
-    var result = [];
-    tags.forEach(element => { 
-        if (tagName == element.name)
-        result.push(element)
-    }); 
-    return result;
-}
+        tagSearch: function (tagName) {
+            if(tagName == "")
+                return geoTags;
 
-function addGeoTag(lat, lon, name, hashtag) {
-    geoTags.push(new geoTag(lat, lon, name, hashtag));
-}
+            var result = [];
+            geoTags.forEach(element => { 
+                if (tagName == element.getName())
+                result.push(element)
+            }); 
+            return result;
+        },
 
-function removeGeoTag(tags, tagName) {
-    tags.forEach(element, index => { 
-        if (tagName == element.name) {
-            tags.splice(index, 0);
-            return;
-        }
-    }); 
-}
+
+        addGeoTag: function (lat, lon, name, hashtag) {
+            geoTags.push(new geoTag(lat, lon, name, hashtag));
+        },
+
+
+
+        removeGeoTag: function (tagName) {
+            geoTags.forEach(element, index => { 
+                if (tagName == element.getName()) {
+                    geoTags.splice(index, 0);
+                    return;
+                }
+            });
+        },
+    }
+})();
 // TODO: CODE ERGÄNZEN
 
 /**
@@ -101,7 +122,10 @@ function removeGeoTag(tags, tagName) {
  */
 app.get('/', function(req, res) {
     res.render('gta', {
-        taglist: []
+        taglist: InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5),
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5))
     });
 });
 
@@ -118,14 +142,17 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
 app.post('/tagging', function (req, res) {
-    addGeoTag(
+    InMemory.addGeoTag(
         req.body.tagging_latitude_input, 
         req.body.tagging_longitude_input, 
         req.body.tagging_name_input,
         req.body.tagging_hashtag_input);
 
     res.render('gta', {
-        taglist: geoTags
+        taglist: InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5),
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5))
     });
   })
 // TODO: CODE ERGÄNZEN START
@@ -142,19 +169,16 @@ app.post('/tagging', function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 app.post('/discovery', function (req, res) {
-    var result = tagSearch(geoTags, req.body.discovery_searchterm_input);
+    var result = InMemory.tagSearch(req.body.discovery_searchterm_input);
 
     res.render('gta', {
-        taglist: result
+        taglist: result,
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(result)
     });
   })
 // TODO: CODE ERGÄNZEN
-
-//Send Stingify of Geotags
-app.get('/taglist', function(req, res) {
-    res.json(JSON.stringify(geoTags))
-});
-
 
 /**
  * Setze Port und speichere in Express.

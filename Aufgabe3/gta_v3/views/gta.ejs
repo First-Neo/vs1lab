@@ -57,8 +57,8 @@
 					<fieldset>
 						<legend>Filter by Searchterm</legend>
 						<input type="text" id="discovery_searchterm_input" name="discovery_searchterm_input">
-						<input type="hidden" id="discovery_lat" name="discovery_lat" value="">
-						<input type="hidden" id="discovery_lon" name="discovery_lon" value="">
+						<input type="hidden" id="discovery_lat" name="discovery_lat" value="<%= lat %>">
+						<input type="hidden" id="discovery_lon" name="discovery_lon" value="<%= lon %>">
 						<input type="submit" id="discovery_submit" name="discovery_submit" value="apply">
 					</fieldset>
 				</form>
@@ -73,7 +73,7 @@
 					</div>
 
 					<div class="tagmap">
-						<img id="result-img" data-tags="test" src="./images/mapview.jpg" alt="a map with locations"/>
+						<img id="result-img" data-tags="<%= datatags %>" src="./images/mapview.jpg" alt="a map with locations"/>
 						<div class="caption">Result map</div>
 					</div>
 				</div>
