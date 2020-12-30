@@ -44,13 +44,16 @@ function geoTag(lat, lon, name, hashtag) {
 
     this.getLatitude = function () {
 		return this.latitude;
-	};
+    };
+    
 	this.getLongitude = function () {
 		return this.longitude;
-	};
+    };
+    
 	this.getName = function () {
 		return this.name;
-	};
+    };
+    
 	this.getHashtag = function () {
 		return this.hashtag;
 	};
@@ -66,7 +69,7 @@ function geoTag(lat, lon, name, hashtag) {
  * - Funktion zum Löschen eines Geo Tags.
  */
 var InMemory = (function () {
-var geoTags = [];
+    var geoTags = [];
 
     return {
         tagSearchRadius: function (lat, lon, radius) {
@@ -87,7 +90,7 @@ var geoTags = [];
 
             var result = [];
             geoTags.forEach(element => { 
-                if (tagName == element.getName())
+                if (tagName == element.getName() || "#" + tagName == element.getHashtag() || tagName == element.getHashtag())
                 result.push(element)
             }); 
             return result;
@@ -103,7 +106,7 @@ var geoTags = [];
         removeGeoTag: function (tagName) {
             geoTags.forEach(element, index => { 
                 if (tagName == element.getName()) {
-                    geoTags.splice(index, 0);
+                    geoTags.splice(index, 1);
                     return;
                 }
             });
