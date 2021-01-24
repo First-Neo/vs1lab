@@ -1,0 +1,31 @@
+POST http://localhost:3000/geotags/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat" : "49.01378",
+    "lon" : "8.390071",
+    "name" : "Beispiel",
+    "hashtag" : "",
+    "search" : "" 
+}
+
+###
+GET http://localhost:3000/geotags/?search=krl HTTP/1.1
+
+###
+GET http://localhost:3000/geotags/3 HTTP/1.1
+
+###
+PUT http://localhost:3000/geotags/2 HTTP/1.1
+content-type: application/json
+
+{
+    "lat" : "49.01378",
+    "lon" : "8.390071",
+    "name" : "Neu",
+    "hashtag" : ""
+}
+
+###
+DELETE http://localhost:3000/geotags/2 HTTP/1.1
+
