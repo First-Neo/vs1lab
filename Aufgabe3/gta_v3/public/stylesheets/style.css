@@ -1,0 +1,79 @@
+
+header {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-flow: column wrap;
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: white;
+  }
+
+main {
+  display: flex;
+  flex-flow: row wrap;
+} 
+
+.tagging {
+ margin: 20px;
+}
+
+.discovery  {
+  margin: 20px;
+}
+
+.filter-form {
+  margin: 20px;
+}
+
+.discoveryTags {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.taglist {
+  display: flex;
+}
+
+.tagmap {
+  margin: 20px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+header {
+  background-color: grey;
+  width: 100%;
+  color: white;
+}
+
+
+
+
+
+#results {
+  list-style-type: none;
+  margin: 3px;
+  padding: 3px;
+}
+
+#results li {
+  padding: 5px;
+  margin-bottom: 7px;
+  background-color: #3bb0de;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+
+.footer {
+  background-color: grey;
+  color: white;
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 3px;
+  width: 100%;
+}

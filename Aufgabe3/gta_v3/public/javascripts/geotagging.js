@@ -121,15 +121,28 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-            tryLocate(function(position) {
-                document.querySelector("#tagging_latitude_input").value = position.coords.latitude;
-                document.querySelector("#tagging_longitude_input").value = position.coords.longitude;
-                document.querySelector("#discovery_lat").value = position.coords.latitude;
-                document.querySelector("#discovery_lon").value = position.coords.longitude;
-                document.querySelector("#result-img").src = getLocationMapSrc(position.coords.latitude, position.coords.longitude, undefined, 15);
-              }, function(msg) {
-                alert(msg);
-              });    
+        
+            var imageNode = document.querySelector("#result-img");
+            var taglist = JSON.parse(imageNode.getAttribute("data-tags"));
+            
+            if (document.querySelector("#tagging_latitude_input").value == "" || document.querySelector("#tagging_longitude_input").value == "") {
+                tryLocate(function(position) {
+                    var lat = getLatitude(position);
+                    var lon = getLongitude(position);
+                    document.querySelector("#tagging_latitude_input").value = lat;
+                    document.querySelector("#tagging_longitude_input").value = lon;
+                    document.querySelector("#discovery_lat").value = lat;
+                    document.querySelector("#discovery_lon").value = lon;
+                    imageNode.src = getLocationMapSrc(lat, lon, taglist, 5);
+
+                }, function(msg) {
+                    alert(msg);
+                });   
+            } else {
+                var lat = document.querySelector("#tagging_latitude_input").value;
+                var lon = document.querySelector("#tagging_longitude_input").value;
+                imageNode.src = getLocationMapSrc(lat, lon, taglist, 5);
+            } 
         }
 
     }; // ... Ende öffentlicher Teil

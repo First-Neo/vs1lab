@@ -29,13 +29,35 @@ app.set('view engine', 'ejs');
  * Teste das Ergebnis im Browser unter 'http://localhost:3000/'.
  */
 
-// TODO: CODE ERGÄNZEN
+// TODO: CODE ERGÄNZEN 
+app.use(express.static('public'));
 
 /**
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
+function geoTag(lat, lon, name, hashtag) {
+    this.latitude = lat;
+    this.longitude = lon;
+    this.name = name;
+    this.hashtag = hashtag;
 
+    this.getLatitude = function () {
+		return this.latitude;
+    };
+    
+	this.getLongitude = function () {
+		return this.longitude;
+    };
+    
+	this.getName = function () {
+		return this.name;
+    };
+    
+	this.getHashtag = function () {
+		return this.hashtag;
+	};
+}
 // TODO: CODE ERGÄNZEN
 
 /**
@@ -46,7 +68,51 @@ app.set('view engine', 'ejs');
  * - Funktion zum hinzufügen eines Geo Tags.
  * - Funktion zum Löschen eines Geo Tags.
  */
+var InMemory = (function () {
+    var geoTags = [];
 
+    return {
+        tagSearchRadius: function (lat, lon, radius) {
+            var taglist = [];
+            geoTags.forEach(element => { 
+                if ((Math.abs(lat - element.getLatitude()) <= radius) &&
+                    (Math.abs(lon - element.getLongitude()) <= radius)) {
+                        taglist.push(element);
+                    }
+            }); 
+            return taglist;
+        },
+
+
+        tagSearch: function (tagName) {
+            if(tagName == "")
+                return geoTags;
+
+            var result = [];
+            geoTags.forEach(element => { 
+                if (tagName == element.getName() || "#" + tagName == element.getHashtag() || tagName == element.getHashtag())
+                result.push(element)
+            }); 
+            return result;
+        },
+
+
+        addGeoTag: function (lat, lon, name, hashtag) {
+            geoTags.push(new geoTag(lat, lon, name, hashtag));
+        },
+
+
+
+        removeGeoTag: function (tagName) {
+            geoTags.forEach(element, index => { 
+                if (tagName == element.getName()) {
+                    geoTags.splice(index, 1);
+                    return;
+                }
+            });
+        },
+    }
+})();
 // TODO: CODE ERGÄNZEN
 
 /**
@@ -57,10 +123,12 @@ app.set('view engine', 'ejs');
  *
  * Als Response wird das ejs-Template ohne Geo Tag Objekte gerendert.
  */
-
 app.get('/', function(req, res) {
     res.render('gta', {
-        taglist: []
+        taglist: InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5),
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5))
     });
 });
 
@@ -76,7 +144,20 @@ app.get('/', function(req, res) {
  * Als Response wird das ejs-Template mit Geo Tag Objekten gerendert.
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
+app.post('/tagging', function (req, res) {
+    InMemory.addGeoTag(
+        req.body.tagging_latitude_input, 
+        req.body.tagging_longitude_input, 
+        req.body.tagging_name_input,
+        req.body.tagging_hashtag_input);
 
+    res.render('gta', {
+        taglist: InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5),
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5))
+    });
+  })
 // TODO: CODE ERGÄNZEN START
 
 /**
@@ -90,24 +171,33 @@ app.get('/', function(req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
+app.post('/discovery', function (req, res) {
+    var result = InMemory.tagSearch(req.body.discovery_searchterm_input);
 
+    res.render('gta', {
+        taglist: result,
+        lat: req.body.tagging_latitude_input,
+        lon: req.body.tagging_longitude_input,
+        datatags: JSON.stringify(result)
+    });
+  })
 // TODO: CODE ERGÄNZEN
 
 /**
  * Setze Port und speichere in Express.
  */
-
 var port = 3000;
 app.set('port', port);
 
 /**
  * Erstelle HTTP Server
  */
-
 var server = http.createServer(app);
 
 /**
  * Horche auf dem Port an allen Netzwerk-Interfaces
  */
-
 server.listen(port);
+
+
+
