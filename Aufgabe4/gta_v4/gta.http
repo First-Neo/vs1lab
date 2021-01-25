@@ -9,11 +9,37 @@ content-type: application/json
     "search" : "" 
 }
 
+
 ###
 GET http://localhost:3000/geotags/?search=krl HTTP/1.1
 
+
 ###
 GET http://localhost:3000/geotags/3 HTTP/1.1
+
+
+###
+PUT http://localhost:3000/geotags/0 HTTP/1.1
+content-type: application/json
+
+{
+    "lat" : "49.01378",
+    "lon" : "8.390071",
+    "name" : "Neu0",
+    "hashtag" : ""
+}
+
+###
+PUT http://localhost:3000/geotags/1 HTTP/1.1
+content-type: application/json
+
+{
+    "lat" : "49.01378",
+    "lon" : "8.390071",
+    "name" : "Neu1",
+    "hashtag" : ""
+}
+
 
 ###
 PUT http://localhost:3000/geotags/2 HTTP/1.1
@@ -22,10 +48,10 @@ content-type: application/json
 {
     "lat" : "49.01378",
     "lon" : "8.390071",
-    "name" : "Neu",
+    "name" : "Neu2",
     "hashtag" : ""
 }
-
 ###
 DELETE http://localhost:3000/geotags/2 HTTP/1.1
+content-type: application/json
 

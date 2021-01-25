@@ -16,6 +16,9 @@ var express = require('express');
 
 var app;
 var cnt = 0;
+
+
+
 app = express();
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({
@@ -38,12 +41,14 @@ app.use(express.static('public'));
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
-function geoTag(lat, lon, name, hashtag, id) {
+
+
+function geoTag(lat, lon, name, hashtag, id) {    
     this.latitude = lat;
     this.longitude = lon;
     this.name = name;
     this.hashtag = hashtag;
-    this.id = id;
+    this.id = cnt;
 
     this.getLatitude = function () {
 		return this.latitude;
@@ -79,6 +84,10 @@ function geoTag(lat, lon, name, hashtag, id) {
     
 	this.setHashtag = function (hashtag) {
 		this.hashtag = hashtag;
+    };
+
+    this.setID = function (id) {
+		this.id = id;
 	};
 }
 // TODO: CODE ERGÄNZEN
@@ -130,8 +139,8 @@ var InMemory = (function () {
         },
 
 
-        addGeoTag: function (lat, lon, name, hashtag,id) {
-            geoTags.push(new geoTag(lat, lon, name, hashtag,id));
+        addGeoTag: function (lat, lon, name, hashtag, id) {
+            geoTags.push(new geoTag(lat, lon, name, hashtag, id));
         },
 
 
@@ -181,7 +190,8 @@ app.post('/tagging', function (req, res) {
         req.body.tagging_latitude_input, 
         req.body.tagging_longitude_input, 
         req.body.tagging_name_input,
-        req.body.tagging_hashtag_input);
+        req.body.tagging_hashtag_input,
+        cnt++);
 
     res.render('gta', {
         taglist: InMemory.tagSearchRadius(req.body.tagging_latitude_input, req.body.tagging_longitude_input, 5),
@@ -216,7 +226,7 @@ app.post('/discovery', function (req, res) {
 // TODO: CODE ERGÄNZEN
 
 app.post('/geotags/', function(req,res){
-   InMemory.addGeoTag(req.body.lat,req.body.lon,req.body.name,req.body.hashtag,cnt);
+   InMemory.addGeoTag(req.body.lat, req.body.lon, req.body.name, req.body.hashtag, cnt);
    cnt = cnt + 1;
    if(req.body.search == "") {
     res.send(JSON.stringify({"taglist":InMemory.tagSearchRadius(req.body.lat, req.body.lon, 5)}));
@@ -234,13 +244,16 @@ app.put('/geotags/:id', function(req,res) {
     const id = req.params.id;
     var tag = InMemory.idSearch(id);
     if(tag == null) {
-        res.sendStatus(404);
+        InMemory.addGeoTag(
+            req.body.lat,
+            req.body.lon,
+            req.body.name,
+            req.body.hashtag,
+            cnt);
+            cnt = cnt + 1;
+            res.sendStatus(200); 
     } else {
-        tag.setLatitude(req.body.lat);
-        tag.setLongitude(req.body.lon);
-        tag.setName(req.body.name);
-        tag.setHashtag(req.body.hashtag);
-        res.send(tag);
+        res.sendStatus(400);
     }
 })
 
@@ -258,10 +271,10 @@ app.delete('/geotags/:id', function(req,res) {
     const id = req.params.id;
     var tag = InMemory.idSearch(id);
     if(tag == null) {
-        res.sendStatus(404);
-    } else {
-        InMemory.removeGeoTag(id);
         res.sendStatus(204);
+    } else {
+        
+        res.send(InMemory.removeGeoTag(id));
     }
 })
 /**
